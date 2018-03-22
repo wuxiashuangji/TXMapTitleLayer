@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>腾讯地图</title>
+	</title>
+	<script src="./leaflet.js"></script>
+	<link rel="stylesheet" href="./leaflet.css">
+	<script src="./TXMapTitleLayer.min.js"></script>
+	<script src="http://apps.bdimg.com/libs/zepto/1.1.4/zepto.min.js"></script>
+	<style>
+		body,
+		html {
+			width: 100%;
+			height: 100%;
+			position: relative;
+		}
+
+		#map {
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			z-index: 0;
+
+		}
+
+		.controls {
+			position: absolute;
+			right: 20px;
+			top: 0;
+			z-index: 1;
+
+		}
+
+		.map-btn {
+			display: block;
+			padding: 10px 15px;
+			margin: 10px;
+			height: 20px;
+			line-height: 20px;
+			;
+			border-radius: 2px;
+			background-color: grey;
+			border: 1px solid gold;
+			color: white;
+
+		}
+
+		.map-btn.active {
+			background-color: rgb(221, 218, 36);
+			border: 1px solid white;
+			color: black;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div id="map">
+
+	</div>
+	<div class="controls">
+		<div class='map-btn active ' data-trigger='Normal'>正常地图</div>
+		<div class='map-btn ' data-trigger='Landform'>卫星地图</div>
+		<div class='map-btn ' data-trigger='Satellite'>地形地图</div>
+	</div>
+
+</body>
+
+</html>
+<script>
+	window.onload = function () {
+		var map = L.map('map', {
+			center: [23.12262, 113.324579],
+			zoom: 10,
+			maxZoom: 23,
+			minZoom: 3,
+		});
+		
+		L.marker([23.12262, 113.324579]).addTo(map)
+		.bindPopup('地图中心')
+		
+		var targetDom,mapTitleLalyer;
+		var Normal = L.tileLayer.txMapTileLayer("Normal"); //调用 腾讯地图
+		var Landform = L.tileLayer.txMapTileLayer("Landform"); //调用 地形地图
+		var Satellite = L.tileLayer.txMapTileLayer("Satellite"); //调用 卫星地图
+		mapTitleLalyer={
+			Normal,Landform,Satellite
+		}
+		mapTitleLalyer['Normal'].addTo(map)
+		$(".controls .map-btn").on('click', function (event) {
+			$(this).addClass('active').siblings().removeClass('active')
+			 targetDom=$(this).data('trigger')
+			 Object.keys(mapTitleLalyer).forEach((element) => {
+				map.removeLayer(mapTitleLalyer[element])
+			 });
+			 mapTitleLalyer[targetDom].addTo(map)
+		})
+		
+
+	
+
+
+
+	}
+</script>
